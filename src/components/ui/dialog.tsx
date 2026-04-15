@@ -1,6 +1,8 @@
 import * as React from 'react'
 import { X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { sfx } from '@/lib/sound'
+import { useStore } from '@/store'
 
 interface DialogProps {
   open: boolean
@@ -9,6 +11,15 @@ interface DialogProps {
 }
 
 export function Dialog({ open, onOpenChange, children }: DialogProps) {
+  const soundOn = useStore((s) => s.settings.sound)
+  const wasOpen = React.useRef(false)
+
+  React.useEffect(() => {
+    if (open && !wasOpen.current && soundOn) sfx.swoosh()
+    if (!open && wasOpen.current && soundOn) sfx.whoosh()
+    wasOpen.current = open
+  }, [open, soundOn])
+
   React.useEffect(() => {
     if (!open) return
     const onEsc = (e: KeyboardEvent) => {

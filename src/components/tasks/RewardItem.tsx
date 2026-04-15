@@ -2,7 +2,6 @@ import { Trash2, Pencil, Gift, Coins } from 'lucide-react'
 import type { Reward } from '@/types'
 import { useStore } from '@/store'
 import { Button } from '@/components/ui/button'
-import { motion } from 'framer-motion'
 
 export function RewardItem({ reward, onEdit }: { reward: Reward; onEdit: (r: Reward) => void }) {
   const redeemReward = useStore((s) => s.redeemReward)
@@ -11,9 +10,8 @@ export function RewardItem({ reward, onEdit }: { reward: Reward; onEdit: (r: Rew
   const canAfford = gold >= reward.cost
 
   return (
-    <motion.div
-      layout
-      className="group flex items-center gap-3 rounded-xl border border-border/40 bg-card/60 p-3 backdrop-blur transition hover:border-amber-500/40"
+    <div
+      className="group flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.015] p-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-colors hover:border-white/10 hover:bg-white/[0.025]"
     >
       <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400">
         <Gift className="h-5 w-5" />
@@ -35,7 +33,7 @@ export function RewardItem({ reward, onEdit }: { reward: Reward; onEdit: (r: Rew
       </div>
       <Button
         size="sm"
-        variant={canAfford ? 'gradient' : 'ghost'}
+        variant={canAfford ? 'gradient' : 'outline'}
         onClick={() => redeemReward(reward.id)}
         disabled={!canAfford}
         className="flex-shrink-0"
@@ -43,6 +41,6 @@ export function RewardItem({ reward, onEdit }: { reward: Reward; onEdit: (r: Rew
         <Coins className="h-3.5 w-3.5" />
         {reward.cost}
       </Button>
-    </motion.div>
+    </div>
   )
 }

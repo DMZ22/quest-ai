@@ -45,13 +45,13 @@ export function Dashboard() {
         <div className="lg:col-span-2">
           <CharacterCard />
         </div>
-        <Card className="border-border/40 bg-gradient-to-br from-fuchsia-950/40 to-slate-900/40">
+        <Card>
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-base">
+            <CardTitle className="flex items-center gap-2 text-[14px] font-semibold uppercase tracking-wider text-muted-foreground">
               <Target className="h-4 w-4 text-fuchsia-400" /> Today's Progress
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="space-y-4">
             <div>
               <div className="mb-1 flex items-center justify-between text-sm">
                 <span className="text-muted-foreground">Dailies complete</span>
@@ -60,17 +60,17 @@ export function Dashboard() {
               <Progress value={todayProgress} indicatorClassName="bg-gradient-to-r from-violet-500 to-fuchsia-500" className="h-2" />
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
-              <div className="rounded-lg border border-border/40 bg-background/30 p-2">
-                <div className="text-lg font-bold">{habits.length}</div>
-                <div className="text-[10px] uppercase text-muted-foreground">Habits</div>
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.015] px-2 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                <div className="text-xl font-bold tabular-nums">{habits.length}</div>
+                <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">Habits</div>
               </div>
-              <div className="rounded-lg border border-border/40 bg-background/30 p-2">
-                <div className="text-lg font-bold">{pendingDailies.length}</div>
-                <div className="text-[10px] uppercase text-muted-foreground">Dailies Left</div>
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.015] px-2 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                <div className="text-xl font-bold tabular-nums">{pendingDailies.length}</div>
+                <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">Dailies Left</div>
               </div>
-              <div className="rounded-lg border border-border/40 bg-background/30 p-2">
-                <div className="text-lg font-bold">{pendingTodos.length}</div>
-                <div className="text-[10px] uppercase text-muted-foreground">To-Do</div>
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.015] px-2 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]">
+                <div className="text-xl font-bold tabular-nums">{pendingTodos.length}</div>
+                <div className="mt-0.5 text-[10px] uppercase tracking-wider text-muted-foreground">To-Do</div>
               </div>
             </div>
             <div className="flex flex-wrap gap-2 pt-1">
@@ -87,8 +87,8 @@ export function Dashboard() {
 
       {/* Active Quest */}
       {activeQuest && (
-        <Card className="relative overflow-hidden border-fuchsia-500/30 bg-gradient-to-r from-red-950/30 via-violet-950/30 to-slate-900/30">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_right,_rgba(236,72,153,0.15),_transparent_60%)]" />
+        <Card className="relative overflow-hidden border-fuchsia-500/20">
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(236,72,153,0.08)_0%,rgba(139,92,246,0.05)_50%,transparent_100%)]" />
           <CardContent className="relative flex items-center gap-4 p-5">
             <div className="text-5xl">{activeQuest.bossIcon}</div>
             <div className="flex-1">
@@ -134,15 +134,15 @@ export function Dashboard() {
 function SectionCard({ title, onAdd, children, emptyText, icon }: { title: string; onAdd: () => void; children: React.ReactNode; emptyText: string; icon: React.ReactNode }) {
   const hasChildren = Array.isArray(children) ? children.length > 0 : !!children
   return (
-    <Card className="border-border/40 bg-card/40">
-      <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-        <CardTitle className="flex items-center gap-2 text-base">{icon}{title}</CardTitle>
+    <Card>
+      <CardHeader className="flex-row items-center justify-between space-y-0 pb-3">
+        <CardTitle className="flex items-center gap-2 text-[14px] font-semibold uppercase tracking-wider text-muted-foreground">{icon}{title}</CardTitle>
         <Button size="xs" variant="ghost" onClick={onAdd}>
           <Plus className="h-3.5 w-3.5" />
         </Button>
       </CardHeader>
       <CardContent className="space-y-2">
-        {hasChildren ? children : <div className="py-6 text-center text-sm text-muted-foreground">{emptyText}</div>}
+        {hasChildren ? children : <div className="py-8 text-center text-sm text-muted-foreground">{emptyText}</div>}
       </CardContent>
     </Card>
   )

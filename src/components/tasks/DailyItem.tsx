@@ -2,7 +2,6 @@ import { Flame, Trash2, Pencil, Check } from 'lucide-react'
 import type { Daily } from '@/types'
 import { useStore } from '@/store'
 import { Badge } from '@/components/ui/badge'
-import { motion } from 'framer-motion'
 import { useState } from 'react'
 import { cn } from '@/lib/utils'
 
@@ -13,25 +12,24 @@ export function DailyItem({ daily, onEdit }: { daily: Daily; onEdit: (d: Daily) 
   const [expanded, setExpanded] = useState(false)
 
   return (
-    <motion.div
-      layout
+    <div
       className={cn(
-        'group rounded-xl border border-border/40 bg-card/60 backdrop-blur transition hover:border-sky-500/40',
-        daily.completed && 'border-emerald-500/40 bg-emerald-500/5'
+        'group rounded-xl border border-white/[0.06] bg-white/[0.015] shadow-[inset_0_1px_0_rgba(255,255,255,0.03)] transition-colors hover:border-white/10 hover:bg-white/[0.025]',
+        daily.completed && 'border-emerald-500/30 bg-emerald-500/[0.04]'
       )}
     >
       <div className="flex items-center gap-3 p-3">
         <button
           onClick={() => toggleDaily(daily.id)}
           className={cn(
-            'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border-2 transition',
+            'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg border transition-colors',
             daily.completed
-              ? 'border-emerald-500 bg-emerald-500 text-white'
-              : 'border-sky-500/50 hover:border-sky-500 hover:bg-sky-500/10'
+              ? 'border-emerald-400/70 bg-emerald-500 text-white'
+              : 'border-white/15 bg-white/[0.03] hover:border-white/25 hover:bg-white/[0.06]'
           )}
           aria-label="Toggle daily"
         >
-          {daily.completed && <Check className="h-5 w-5" />}
+          {daily.completed && <Check className="h-4 w-4" strokeWidth={3} />}
         </button>
         <div className="min-w-0 flex-1 cursor-pointer" onClick={() => (daily.checklist.length > 0 || daily.notes) && setExpanded(!expanded)}>
           <div className="flex items-center gap-2">
@@ -48,17 +46,17 @@ export function DailyItem({ daily, onEdit }: { daily: Daily; onEdit: (d: Daily) 
             <div className="mt-0.5 text-xs text-muted-foreground">{daily.tags.map((t) => `#${t}`).join(' ')}</div>
           )}
         </div>
-        <div className="flex items-center gap-1 opacity-0 transition group-hover:opacity-100">
-          <button onClick={() => onEdit(daily)} className="rounded p-1.5 hover:bg-accent" aria-label="Edit">
+        <div className="flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100">
+          <button onClick={() => onEdit(daily)} className="rounded-md p-1.5 text-muted-foreground hover:bg-white/[0.06] hover:text-foreground" aria-label="Edit">
             <Pencil className="h-3.5 w-3.5" />
           </button>
-          <button onClick={() => deleteTask(daily.id, 'daily')} className="rounded p-1.5 text-red-400 hover:bg-red-500/10" aria-label="Delete">
+          <button onClick={() => deleteTask(daily.id, 'daily')} className="rounded-md p-1.5 text-red-400 hover:bg-red-500/10" aria-label="Delete">
             <Trash2 className="h-3.5 w-3.5" />
           </button>
         </div>
       </div>
       {(expanded || daily.checklist.length > 0) && (daily.notes || daily.checklist.length > 0) && (
-        <div className="border-t border-border/40 px-4 py-3 text-sm">
+        <div className="border-t border-white/[0.05] px-4 py-3 text-sm">
           {daily.notes && <p className="mb-2 text-muted-foreground">{daily.notes}</p>}
           {daily.checklist.map((item) => (
             <label key={item.id} className="flex cursor-pointer items-center gap-2 py-1">
@@ -73,6 +71,6 @@ export function DailyItem({ daily, onEdit }: { daily: Daily; onEdit: (d: Daily) 
           ))}
         </div>
       )}
-    </motion.div>
+    </div>
   )
 }

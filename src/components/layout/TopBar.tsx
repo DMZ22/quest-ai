@@ -25,7 +25,7 @@ export function TopBar() {
   const title = titles[location.pathname] ?? 'Quest AI'
 
   return (
-    <header className="sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-border/40 bg-background/70 px-4 backdrop-blur-xl lg:px-8">
+    <header className="sticky top-0 z-20 flex h-16 items-center gap-4 border-b border-white/[0.06] bg-background/60 px-4 backdrop-blur-xl lg:px-8">
       <button
         onClick={() => navigate('/')}
         className="flex items-center gap-2 lg:hidden"
@@ -52,7 +52,7 @@ export function TopBar() {
 
 function StatChip({ icon, value }: { icon: React.ReactNode; value: string }) {
   return (
-    <div className="flex items-center gap-1 rounded-full border border-border/40 bg-card/40 px-2.5 py-1 text-xs font-semibold tabular-nums">
+    <div className="flex items-center gap-1.5 rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-1 text-[11px] font-semibold tabular-nums shadow-[inset_0_1px_0_rgba(255,255,255,0.04)]">
       {icon}
       {value}
     </div>

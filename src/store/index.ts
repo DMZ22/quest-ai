@@ -334,6 +334,7 @@ export const useStore = create<State>()((set, get) => ({
       get().progressQuest(result.xp)
     } else {
       set((s) => ({ dailies: s.dailies.map((d) => (d.id === id ? { ...d, completed: false } : d)) }))
+      if (get().settings.sound) sfx.pop()
     }
     get().checkAchievements()
     get().persist()
@@ -359,6 +360,7 @@ export const useStore = create<State>()((set, get) => ({
       get().progressQuest(result.xp)
     } else {
       set((s) => ({ todos: s.todos.map((t) => (t.id === id ? { ...t, completed: false, completedAt: null } : t)) }))
+      if (get().settings.sound) sfx.pop()
     }
     get().checkAchievements()
     get().persist()
@@ -369,6 +371,7 @@ export const useStore = create<State>()((set, get) => ({
     const reward = rewards.find((r) => r.id === id)
     if (!reward) return
     if (character.gold < reward.cost) {
+      if (settings.sound) sfx.error()
       get().pushToast({ title: 'Not enough gold', variant: 'destructive' })
       return
     }
@@ -417,15 +420,18 @@ export const useStore = create<State>()((set, get) => ({
     if (!item) return false
     const { character, settings } = get()
     if (character.gold < item.price) {
+      if (settings.sound) sfx.error()
       get().pushToast({ title: 'Not enough gold', variant: 'destructive' })
       return false
     }
     if (item.class && character.class !== 'none' && item.class !== character.class) {
+      if (settings.sound) sfx.error()
       get().pushToast({ title: 'Class-restricted', description: `Only ${item.class}s can buy this.`, variant: 'destructive' })
       return false
     }
     const owned = [...character.ownedItems]
     if (item.slot !== 'consumable' && owned.includes(itemId)) {
+      if (settings.sound) sfx.error()
       get().pushToast({ title: 'Already owned', variant: 'destructive' })
       return false
     }
@@ -476,6 +482,7 @@ export const useStore = create<State>()((set, get) => ({
         mana: Math.min(character.mana, newMaxMana),
       },
     })
+    if (get().settings.sound) sfx.equip()
     get().persist()
   },
 
@@ -490,7 +497,7 @@ export const useStore = create<State>()((set, get) => ({
         mana: Math.min(character.maxMana, character.mana + (item.restoreMana ?? 0)),
       },
     })
-    if (settings.sound) sfx.buy()
+    if (settings.sound) sfx.potion()
     get().pushToast({ title: `Used ${item.name}`, variant: 'success' })
     get().persist()
   },
@@ -514,6 +521,7 @@ export const useStore = create<State>()((set, get) => ({
     set((s) => ({
       quests: s.quests.map((q) => (q.id === id ? { ...q, active: true, startedAt: new Date().toISOString() } : { ...q, active: false })),
     }))
+    if (get().settings.sound) sfx.questStart()
     get().persist()
   },
 
@@ -582,12 +590,16 @@ export const useStore = create<State>()((set, get) => ({
   },
 
   progressQuest: (amount) => {
+    const soundOn = get().settings.sound
     set((s) => ({
       quests: s.quests.map((q) => {
         if (!q.active || q.completed) return q
         const newProgress = Math.min(q.bossMaxHp, q.progress + amount)
         const completed = newProgress >= q.bossMaxHp
+        // Boss hit sound (only if there was damage and quest not yet done)
+        if (amount > 0 && !completed && soundOn) sfx.bossHit()
         if (completed) {
+          if (soundOn) sfx.bossDefeat()
           // Award boss rewards
           setTimeout(() => {
             const c = get().character
@@ -617,6 +629,7 @@ export const useStore = create<State>()((set, get) => ({
       if (a.id === 'gold_1k') progress = character.gold
       const unlocked = progress >= a.target
       if (unlocked && !a.unlockedAt) {
+        if (get().settings.sound) sfx.achievement()
         get().pushToast({ title: `🏆 ${a.name}`, description: a.description, variant: 'reward' })
         return { ...a, progress, unlockedAt: new Date().toISOString() }
       }
