@@ -114,7 +114,9 @@ npm run build
 git push origin main
 ```
 
-**Live demo:** See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the deployed URL.
+**Live demo:** 🌐 **https://dmz22.github.io/quest-ai/**
+
+See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the full deployment pipeline.
 
 ## 💾 Data & Privacy
 

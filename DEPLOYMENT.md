@@ -2,113 +2,148 @@
 
 ## 🌐 Live URL
 
-> **https://DMZ22.github.io/quest-ai/**
+> # **https://dmz22.github.io/quest-ai/**
 
-The app is deployed **automatically** via GitHub Actions on every push to `main`.
+**Status:** ✅ **LIVE** (deployed 2026-04-15)
+**Host:** GitHub Pages (global CDN via Fastly)
+**Cost:** $0 / month **forever**
+**Repo:** https://github.com/DMZ22/quest-ai
 
-Status: **✅ Live**
-Region: **GitHub Pages (global CDN)**
-Cost: **$0 / month forever**
+Open the URL in any modern browser. No signup. No installation. Everything works offline after first load thanks to localStorage persistence + PWA manifest.
 
 ---
 
 ## 🏗️ How it's deployed
 
-Quest AI is a 100% **static Vite + React** app that builds to `dist/` and ships to GitHub Pages. No backend, no database, no server costs — the app stores all user data in the browser's `localStorage`.
+Quest AI is a 100% **static Vite + React** app. `npm run build` outputs a `dist/` folder that gets published to the **`gh-pages` branch** of the repo. GitHub Pages serves that branch directly.
 
-### The pipeline (`.github/workflows/deploy.yml`)
+**No server. No database. No backend. No subscription. No credit card.**
 
-1. On push to `main`, GitHub Actions spins up Ubuntu.
-2. `actions/setup-node@v4` installs Node 20.
-3. `npm install` → `npm run build` → generates `dist/`.
-4. `actions/upload-pages-artifact@v3` uploads the build.
-5. `actions/deploy-pages@v4` publishes it live.
+### The deploy pipeline
 
-Total CI time: **~60 seconds**. Rollbacks are a single `git revert`.
+```bash
+npm run build          # Vite builds to ./dist
+npx gh-pages -d dist   # Publishes ./dist to the gh-pages branch
+# GitHub Pages picks up the change and serves it in ~20 seconds
+```
 
-### Why GitHub Pages?
+This is wired into `package.json` as:
+```json
+"scripts": {
+  "deploy": "npm run build && gh-pages -d dist"
+}
+```
 
-- **Free forever**, no credit card, no trial.
-- Global CDN via Fastly.
-- SSL by default.
-- Custom domains supported (add a `CNAME` file in `public/`).
+So a full deploy is just:
+```bash
+npm run deploy
+```
+
+### Configuration that made it possible
+
+1. **`vite.config.ts`** — `base: './'` so asset paths work at any sub-path.
+2. **`App.tsx`** — uses `HashRouter` (not `BrowserRouter`) so routes resolve client-side without server rewrites.
+3. **`public/manifest.webmanifest`** — makes the app installable as a PWA.
+4. **`public/favicon.svg`** — vector icon, no raster assets needed.
 
 ---
 
 ## 📦 Build stats
 
-| Metric              | Value        |
-|---------------------|--------------|
-| Bundle (raw)        | ~942 KB      |
-| Bundle (gzipped)    | ~274 KB      |
-| CSS (gzipped)       | ~9 KB        |
-| First paint target  | < 1.5s on 4G |
-| Lighthouse target   | 95+ perf     |
+| Metric              | Value              |
+|---------------------|--------------------|
+| Bundle (raw)        | 942 KB             |
+| Bundle (gzipped)    | **274 KB**         |
+| CSS (gzipped)       | 9 KB               |
+| Total modules       | 2665               |
+| Build time          | ~20s               |
+| Dependencies        | 401 packages       |
+| Lighthouse (target) | 95+ performance    |
 
 ---
 
 ## 🔄 Redeploying
 
+From the repo root:
+
 ```bash
-# One-liner — push a change and the site redeploys
-git add .
-git commit -m "feat: awesome new feature"
-git push origin main
-# Watch it go live:
-gh run watch
+cd quest-ai
+npm run build   # rebuild
+npm run deploy  # ships to gh-pages branch
 ```
 
-Or manually trigger:
+GitHub Pages will auto-rebuild in ~20s after `gh-pages` pushes. You can watch status:
 ```bash
-gh workflow run deploy.yml
+gh api repos/DMZ22/quest-ai/pages
+```
+
+Expected response when live:
+```json
+{ "status": "built", "html_url": "https://dmz22.github.io/quest-ai/" }
 ```
 
 ---
 
-## 🔧 Local build & preview
+## 🔧 Local development
 
 ```bash
 cd quest-ai
 npm install
-npm run dev      # localhost:5173
-npm run build    # -> dist/
-npm run preview  # preview the production build
+npm run dev      # http://localhost:5173
+npm run build    # produces dist/
+npm run preview  # preview the production build locally
 ```
 
 ---
 
-## 🌍 Alternative free hosts
+## 🌍 Alternative free hosts (drop-in)
 
-Quest AI is 100% static, so you can also drop `dist/` onto any of these for free:
+Because Quest AI is 100% static, you can deploy `dist/` to any of these for free:
 
-| Host            | How                                                  |
-|-----------------|------------------------------------------------------|
-| **Vercel**      | `vercel deploy --prod`                               |
-| **Netlify**     | `netlify deploy --prod --dir=dist`                   |
-| **Cloudflare Pages** | Connect the repo in the dashboard               |
-| **Surge.sh**    | `surge dist my-quest-ai.surge.sh`                    |
+| Host                | Command                                               |
+|---------------------|-------------------------------------------------------|
+| **Vercel**          | `vercel deploy --prod`                                |
+| **Netlify**         | `netlify deploy --prod --dir=dist`                    |
+| **Cloudflare Pages**| Connect the repo in the dashboard                     |
+| **Surge.sh**        | `surge dist my-quest-ai.surge.sh`                     |
+| **Firebase Hosting**| `firebase deploy`                                     |
 
-All stay free forever — Quest AI has no server costs by design.
+All stay free forever — Quest AI has zero server costs by design.
 
 ---
 
 ## 🔐 Privacy & data
 
-- **All data lives in the user's browser.** No account. No server.
-- **API keys** (if any) are stored only in `localStorage`, never transmitted except directly to the chosen provider (Gemini / OpenAI / Anthropic).
-- **Export/Import JSON** in Settings → Data for manual backups.
-
-If a user clears their browser data, they lose their character — remind them to export!
-
----
-
-## 🧭 DNS + custom domain (optional)
-
-1. Add `CNAME` file in `public/` with your domain, e.g. `questai.yourdomain.com`.
-2. Point a CNAME record at `DMZ22.github.io`.
-3. Re-push — Pages will auto-configure SSL.
+- **All data lives in the user's browser** (`localStorage`). No server, no account, no telemetry.
+- **API keys** (optional Gemini / OpenAI / Claude for the AI Coach) are stored only in `localStorage` and only sent to the chosen provider.
+- **Export/Import JSON** backups from Settings → Data.
+- Clearing browser data = losing your character. Export regularly.
 
 ---
 
-**Deployed by:** Claude Opus 4.6 on 2026-04-15
+## 🧭 Custom domain (optional)
+
+1. Add a `CNAME` file in `public/` containing your domain (e.g. `questai.yourdomain.com`).
+2. Point a CNAME DNS record at `dmz22.github.io`.
+3. Run `npm run deploy`.
+4. GitHub Pages will auto-provision SSL within a few minutes.
+
+---
+
+## 📊 Post-deploy verification
+
+After every deploy, hit the live URL and check:
+
+- [x] Page loads with title "Quest AI — Level Up Your Life"
+- [x] Character card renders with animated avatar + particles
+- [x] Sidebar navigation works across all 10 routes
+- [x] Clicking a habit + button updates XP live
+- [x] Ctrl+K command palette opens
+- [x] Browser console is clean (no errors)
+- [x] Data persists across page reloads
+
+---
+
+**Deployed:** 2026-04-15
 **Repo:** https://github.com/DMZ22/quest-ai
+**Owner:** [@DMZ22](https://github.com/DMZ22)
