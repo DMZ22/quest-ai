@@ -116,7 +116,11 @@ git push origin main
 
 **Live demo:** 🌐 **https://dmz22.github.io/quest-ai/**
 
-See [`DEPLOYMENT.md`](./DEPLOYMENT.md) for the full deployment pipeline.
+![Quest AI Dashboard](./docs/screenshots/01-dashboard-desktop.png)
+
+- 📖 Full writeup: [`PROJECT_REPORT.md`](./PROJECT_REPORT.md) (includes screenshots of every page)
+- 🚀 Deploy pipeline: [`DEPLOYMENT.md`](./DEPLOYMENT.md)
+- 🛠️ Build protocol for future projects: [`DEVELOPMENT_PROTOCOL.md`](./DEVELOPMENT_PROTOCOL.md)
 
 ## 💾 Data & Privacy
 
